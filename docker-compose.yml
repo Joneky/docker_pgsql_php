@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.8'
 
 services:
   nginx:
@@ -6,7 +6,8 @@ services:
     build:
       context: docker/nginx
     volumes:
-      - ./www:/www
+      - ./app:/var/www/project
+      - ./docker/nginx/www.conf:/etc/nginx/conf.d/www.conf
     ports:
       - "8080:80"
     container_name: d_nginx
@@ -29,19 +30,20 @@ services:
     networks:
       - myProject
     volumes:
-      - ./www:/www
+      - ./app:/var/www/project
 
 
   postgres:
     image: postgres:latest
     restart: always
     container_name: d_postgres
+    volumes:
+      - ./postgres:/var/lib/postgres
     environment:
       POSTGRES_ROOT_PASSWORD: "root"
       POSTGRES_DB: "symfony"
       POSTGRES_USER: "symfony"
       POSTGRES_PASSWORD: "secret"
-
     ports:
       - "5432:5432"
     networks:
